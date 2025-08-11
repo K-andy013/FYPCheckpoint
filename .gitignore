@@ -1,0 +1,99 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+*.pkl
+*.pickle
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.env
+
+# VSCode
+.vscode/
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Data and results
+data/
+data.zip
+results*/
+*.csv
+*.tsv
+
+# Model weights and checkpoints
+*.h5
+*.hdf5
+*.ckpt
+*.pth
+*.pt
+*.pb
+*.onnx
+*.joblib
+*.npz
+*.npy
+*.sav
+*.weights
+*.tflite
+*.pkl
+*.model
+*.json
+
+# Model folders
+SOTA-models/
+models/
+checkpoints/
+runs/
+output/
+outputs/
+logs/
+wandb/
+
+# Image files (all folders)
+**/images/
+**/labels/
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.tif
+*.tiff
+*.gif
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Ignore HTML report files
+*.html
+
+# Ignore PDFs and docs
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+
+# Ignore test

@@ -1,0 +1,5 @@
+data/
+*.pyc
+__pycache__/
+SwishRes-U-Net-main/woundSegmentation-code/SOTA-models/Fuseg/model-DUnet-Fuseg-aug-100ep.hdf5
+results-SOTA/Fuseg/crossCorpora/model-DUnet-Fuseg-aug-100ep/model-pred-masks/*.png
