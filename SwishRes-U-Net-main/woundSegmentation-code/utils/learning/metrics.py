@@ -6,6 +6,8 @@
 #
 # ------------------------------------------------------------ #
 from keras import backend as K
+import tensorflow as tf
+
 
 
 # dice coefficient
@@ -79,3 +81,11 @@ def f1(y_true, y_pred):
     recall = recall(y_true, y_pred)
 
     return 2*((precision*recall)/(precision+recall+K.epsilon()))
+
+
+def iou(y_true, y_pred, smooth=1e-6):
+    y_true_f = tf.cast(tf.reshape(y_true, [-1]), tf.float32)
+    y_pred_f = tf.cast(tf.reshape(y_pred, [-1]), tf.float32)
+    intersection = tf.reduce_sum(y_true_f * y_pred_f)
+    union = tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) - intersection
+    return (intersection + smooth) / (union + smooth)

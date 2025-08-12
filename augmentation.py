@@ -44,3 +44,44 @@ class Augmentation:
         # Apply test-time transformation (normalization only)
         transformed = self.test_transform(image=img)
         return transformed["image"]
+
+if __name__ == "__main__":
+    import cv2
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    # Paths to your test image and mask
+    img_path = "test_data/image.png"
+    mask_path = "test_data/mask.png"
+
+    # Read image and mask
+    img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
+    mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+
+    # Initialize augmentation
+    aug = Augmentation()
+
+    # Apply train-time augmentation
+    aug_img, aug_mask = aug.apply_train(img, mask)
+    aug_img = aug_img.permute(1, 2, 0).cpu().numpy()  # CHW to HWC
+    aug_mask = aug_mask.cpu().numpy()
+
+    # Display results
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 3, 1)
+    plt.title("Original Image")
+    plt.imshow(img)
+    plt.axis('off')
+
+    plt.subplot(1, 3, 2)
+    plt.title("Augmented Image")
+    plt.imshow((aug_img * 0.5 + 0.5).clip(0, 1))  # Undo normalization for display
+    plt.axis('off')
+
+    plt.subplot(1, 3, 3)
+    plt.title("Augmented Mask")
+    plt.imshow(aug_mask.squeeze(), cmap='gray')
+    plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()

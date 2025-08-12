@@ -5,7 +5,7 @@ from keras.utils.generic_utils import CustomObjectScope
 
 from models.DUNet import build_model
 
-from utils.learning.metrics import dice_coef, precision, recall
+from utils.learning.metrics import dice_coef, precision, recall,iou
 from utils.learning.losses import dice_coef_loss
 from utils.io.data import DataGen, save_results, save_history, load_data
 
@@ -40,7 +40,7 @@ es = EarlyStopping(monitor='dice_coef', patience=5, mode='max', restore_best_wei
 
 
 model.summary()
-model.compile(optimizer=Adam(lr=learning_rate), loss=loss, metrics=[dice_coef, precision, recall])
+model.compile(optimizer=Adam(lr=learning_rate), loss=loss, metrics=[dice_coef, precision, recall, iou])
 
 model_history = model.fit_generator(data_gen.generate_data(batch_size=batch_size, train=True),
                                        steps_per_epoch=int(data_gen.get_num_data_points(train=True) / batch_size),

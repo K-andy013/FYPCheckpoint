@@ -6,10 +6,10 @@ from woundProcessor import WoundPreprocessor
 from augmentation import Augmentation
 
 # Set your input and output directories
-input_img_dir = "data/FuSeg/train/images/"
-input_mask_dir = "data/FuSeg/train/labels/"
-output_img_dir = "data/FuSeg/processed/images/"
-output_mask_dir = "data/FuSeg/processed/labels/"
+input_img_dir = "test_data\images"
+input_mask_dir = "test_data\labels"
+output_img_dir = "test_data\dir\processed\images"
+output_mask_dir = "test_data\dir\processed\labels"
 
 os.makedirs(output_img_dir, exist_ok=True)
 os.makedirs(output_mask_dir, exist_ok=True)
@@ -26,7 +26,12 @@ for img_name in tqdm(img_files, desc="Preprocessing"):
     mask_path = os.path.join(input_mask_dir, img_name)
 
     # Preprocess (returns preprocessed numpy arrays)
-    img, mask = preprocessor(img_path, mask_path)
+    img, mask, _ = preprocessor(img_path, mask_path)
+
+    # Check if mask is None before using it
+    if mask is None:
+        print(f"Warning: Mask not found for {img_name}, skipping.")
+        continue
 
     # Ensure uint8 format for Albumentations compatibility later
     if img.dtype != np.uint8:
@@ -38,4 +43,4 @@ for img_name in tqdm(img_files, desc="Preprocessing"):
     cv2.imwrite(os.path.join(output_img_dir, img_name), cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
     cv2.imwrite(os.path.join(output_mask_dir, img_name), mask)
 
-print("✅ Preprocessing complete. All images saved in uint8 format.")
+print("Preprocessing complete. All images saved in uint8 format.")
