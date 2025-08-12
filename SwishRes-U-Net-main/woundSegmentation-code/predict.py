@@ -9,7 +9,8 @@ from models.DUNet import build_model
 from utils.learning.metrics import dice_coef, precision, recall
 from utils.BilinearUpSampling import BilinearUpSampling2D
 from utils.io.data import load_data, save_results, save_rgb_results, save_history, load_test_images, DataGen
-from utils.io.dataVal import DataGenValidation
+#from utils.io.dataVal import DataGenValidation
+from utils.io.data import DataGen
 
 # settings
 input_dim_x = 224
@@ -29,7 +30,8 @@ weight_file_name = save_model_name+ '.hdf5'
 save_result_path = 'C:/Users/kwame/OneDrive/Desktop/UNI STUFF/COMPUTER SCIENCE/L400/Project Work/Test/results-SOTA/Fuseg/crossCorpora/' + save_model_name + '/model-pred-masks/'
 #save_result_path = 'C:/Users/kwame/OneDrive/Desktop/UNI STUFF/COMPUTER SCIENCE/L400/Project Work/Test/results-SOTA/azh/crossCorpora/' + save_model_name + '/model-pred-masks/'
 
-data_gen = DataGenValidation(data_path, split_ratio=0.0, x=input_dim_x, y=input_dim_y, color_space=color_space)
+data_gen = DataGen(data_path, split_ratio=0.0, x=input_dim_x, y=input_dim_y, color_space=color_space)
+# val to gen...data_gen = DataGen(data_path, split_ratio=0.0, x=input_dim_x, y=input_dim_y, color_space=color_space)
 #data_gen = DataGen(data_path, split_ratio=0.0, x=input_dim_x, y=input_dim_y, color_space=color_space)
 
 x_test, test_label_filenames_list = load_test_images(data_path)

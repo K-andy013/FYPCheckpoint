@@ -162,15 +162,15 @@ class WoundPreprocessor:
             return img_cropped, None
         # If all black, return original
         return img, mask
-
-"""# Example usage:
+"""
+# Example usage:
 if __name__ == "__main__":
     # Initialize preprocessor
     preprocessor = WoundPreprocessor(target_size=(256, 256))
     
     # Process sample image
-    img_path = "test_data\images\image.png"
-    mask_path = "test_data\labels\mask.png"
+    img_path = r"test_data\images\11.png"
+    mask_path = r"test_data\labels\11.png"
 
     img, mask,pyramid= preprocessor(img_path, mask_path)
     #add pyramid in above line

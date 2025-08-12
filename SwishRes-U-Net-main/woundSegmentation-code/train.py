@@ -7,7 +7,7 @@ from models.DUNet import build_model
 
 from utils.learning.metrics import dice_coef, precision, recall,iou
 from utils.learning.losses import dice_coef_loss
-from utils.io.data import DataGen, save_results, save_history, load_data
+from utils.io.data import DataGen, save_results, save_history,generate_data
 
 
 # manually set cuda 10.0 path

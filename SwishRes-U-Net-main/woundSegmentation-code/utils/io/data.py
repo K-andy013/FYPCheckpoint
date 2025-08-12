@@ -5,6 +5,7 @@ import random
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+from augmentation import Augmentation  # Adjust import path as needed
 
 
 class DataGen:
@@ -47,33 +48,45 @@ class DataGen:
                 if i < len(image_file_list):
                     sample_image_filename = image_file_list[i]
                     sample_label_filename = label_file_list[i]
-                    # print('image: ', image_file_list[i])
-                    # print('label: ', label_file_list[i])
                     if train or val:
                         image = cv2.imread(self.path_train_images + sample_image_filename, 1)
-                        image = cv2.resize(image, (224,224)) # I inserted
                         label = cv2.imread(self.path_train_labels + sample_label_filename, 0)
-                        label = cv2.resize(label, (224,224))# I inserted
                     elif test is True:
                         image = cv2.imread(self.path_test_images + sample_image_filename, 1)
-                        image = cv2.resize(image, (224,224)) # I inserted
                         label = cv2.imread(self.path_test_labels + sample_label_filename, 0)
-                        label = cv2.resize(label, (224,224))# I inserted
-                    # image, label = self.change_color_space(image, label, self.color_space)
                     label = np.expand_dims(label, axis=2)
+
+                    # --- AUGMENTATION & NORMALIZATION ---
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    label_2d = label.squeeze()
+                    if train:
+                        aug_img, aug_mask = self.augmentor.apply_train(image, label_2d)
+                        image = aug_img.permute(1, 2, 0).cpu().numpy()
+                        label = aug_mask.cpu().numpy()
+                        if label.ndim == 2:
+                            label = np.expand_dims(label, axis=2)
+                    else:  # val or test
+                        image = self.augmentor.apply_test(image)
+                        image = image.permute(1, 2, 0).cpu().numpy()
+                        # For mask, just ensure correct shape and type
+                        label = label_2d.astype("float32")
+                        if label.ndim == 2:
+                            label = np.expand_dims(label, axis=2)
+
+                    image = image.astype("float32")
+                    label = label.astype("float32")
+
                     if image.shape[0] == self.x and image.shape[1] == self.y:
-                        image_batch.append(image.astype("float32"))
+                        image_batch.append(image)
                     else:
                         print('the input image shape is not {}x{}'.format(self.x, self.y))
                     if label.shape[0] == self.x and label.shape[1] == self.y:
-                        label_batch.append(label.astype("float32"))
+                        label_batch.append(label)
                     else:
                         print('the input label shape is not {}x{}'.format(self.x, self.y))
                 i += 1
             if image_batch and label_batch:
-                image_batch = normalize(np.array(image_batch))
-                label_batch = normalize(np.array(label_batch))
-                yield (image_batch, label_batch)
+                yield (np.array(image_batch), np.array(label_batch))
 
    def __init__(self, path, split_ratio, x, y, color_space='rgb', max_samples=None):
     self.x = x
@@ -101,8 +114,7 @@ class DataGen:
     self.y_val_file_list = self.label_file_list[:self.split_index]
     self.x_test_file_list = get_png_filename_list(self.path_test_images)
     self.y_test_file_list = get_png_filename_list(self.path_test_labels)
-
-
+    self.augmentor = Augmentation()  # Add this line
     
 
     
@@ -175,10 +187,7 @@ def load_png_images(path):
 
 
 def load_data(path):
-    # path_train_images = path + "train/images/padded/"
-    # path_train_labels = path + "train/labels/padded/"
-    # path_test_images = path + "test/images/padded/"
-    # path_test_labels = path + "test/labels/padded/"
+   
     path_train_images = path + "train/images/"
     path_train_labels = path + "train/labels/"
     path_test_images = path + "test/images/"
