@@ -1,19 +1,23 @@
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 class Augmentation:
     def __init__(self):
         self.train_transform = A.Compose([
             # Apply geometric and elastic deformations
             A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.15, rotate_limit=25, p=0.5),
-            A.ElasticTransform(alpha=1, sigma=50, alpha_affine=30, p=0.3),
+            A.ElasticTransform(alpha=1, sigma=50, p=0.3),
 
             # Apply brightness, contrast, and color jitter
             A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
             A.ColorJitter(hue=0.05, saturation=0.1, p=0.3),
-            
+
             # Add gamma correction for illumination normalization
-            A.RandomGamma(gamma_limit=(80, 120), p=0.4),  # <--- Added here
+            A.RandomGamma(gamma_limit=(80, 120), p=0.4),
 
             # Add occlusion and distortion
             A.CoarseDropout(max_holes=8, max_height=20, max_width=20, fill_value=0, p=0.3),
@@ -29,7 +33,7 @@ class Augmentation:
             # Convert to tensor
             ToTensorV2()
         ])
-        
+
         self.test_transform = A.Compose([
             A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             ToTensorV2()
@@ -45,14 +49,11 @@ class Augmentation:
         transformed = self.test_transform(image=img)
         return transformed["image"]
 
-if __name__ == "__main__":
-    import cv2
-    import matplotlib.pyplot as plt
-    import numpy as np
 
+if __name__ == "__main__":
     # Paths to your test image and mask
-    img_path = "test_data/image.png"
-    mask_path = "test_data/mask.png"
+    img_path = "test_data/images/11.png"
+    mask_path = "test_data/labels/11.png"
 
     # Read image and mask
     img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
